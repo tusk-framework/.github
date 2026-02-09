@@ -141,7 +141,7 @@ Check out our [Contributing Guide](https://github.com/tusk-framework/.github/blo
 
 ## License
 
-Tusk Framework is open-source software licensed under the [MIT License](LICENSE).
+Tusk Framework is open-source software licensed under the [MIT License](https://github.com/tusk-framework/tusk-framework/blob/main/LICENSE).
 
 ---
 
