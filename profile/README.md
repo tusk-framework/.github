@@ -1,6 +1,6 @@
 # Tusk Framework
 
-> **Domain-first PHP framework for modern web applications and microservices**
+> **High-performance, persistent PHP Runtime & Framework Platform.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-777BB4.svg)](https://www.php.net/)
@@ -10,145 +10,101 @@
 
 ## What is Tusk?
 
-Tusk is a **lightweight, high-performance PHP framework** that puts your domain logic first. Built from the ground up with modern PHP 8.2+ features, it provides everything you need to build production-ready APIs and microservices—without the bloat.
+Tusk is a modern platform designed to redefine how PHP applications are built and deployed. It moves beyond the traditional "boot-and-die" lifecycle by combining a **high-performance Go-based master process** with a **persistent PHP framework**.
+
+By keeping your application in memory, Tusk eliminates the overhead of framework bootstrapping on every request, providing sub-millisecond latency and native support for modern architecture patterns.
 
 ### Key Features
 
-- **Zero-Dependency CLI** - Scaffold projects instantly with a single PHAR file
-- **Native HTTP Server** - Run without Nginx/Apache using pure PHP sockets
-- **Powerful DI Container** - Attribute-based dependency injection
-- **Repository Pattern** - Clean data access with resilient PDO connections
-- **Microservice Ready** - Built-in health checks, metrics, and RPC interfaces
-- **Process Supervision** - Long-running workers with automatic restart
+- **Native Go Engine** - Replaces Nginx and PHP-FPM with a single, self-contained binary.
+- **Unified CLI** - One tool (`tusk`) for everything: starting the server, scaffolding, and proxying scripts.
+- **Persistent Runtime** - Your application stays alive across requests, maintaining state and connection pools.
+- **Zero-Dependency Installation** - Managed portable PHP runtimes via one-line installers.
+- **Domain-First Framework** - Clean architecture (DI, Repository, Events) built specifically for performance.
 
 ---
 
-## Quick Start
+## Quick Start (One-Liner)
 
+Install Tusk and a portable PHP runtime in seconds:
+
+### Linux / macOS
 ```bash
-# Download the CLI
-wget https://github.com/tusk-framework/tusk-cli/releases/latest/download/tusk.phar
-
-# Create a new project
-php tusk.phar init my-api
-
-# Start developing
-cd my-api
-composer install
-php ../tusk.phar run public/index.php
+curl -fsSL https://tusk.sh/install.sh | bash
 ```
 
-**Your API is live at `http://localhost:8080`**
+### Windows (PowerShell)
+```powershell
+iwr -useb https://tusk.sh/install.ps1 | iex
+```
+
+### Create & Run
+```bash
+tusk init my-app
+cd my-app
+tusk start
+```
+
+**Your application is live at `http://localhost:8080`**
 
 ---
 
 ## Architecture
 
-Tusk is built on a **modular, layered architecture** that promotes clean code and separation of concerns:
+Tusk follows a **Master-Worker** model where Go handles the networking and PHP handles the logic.
 
 ```mermaid
-graph TB
-    subgraph Application["Application Layer"]
-        Controllers["Controllers & Services"]
+graph TD
+    subgraph Engine ["Tusk Engine (Go)"]
+        Server["HTTP Server / TCP"] --> Pool["Worker Pool / IPC"]
     end
     
-    subgraph Framework["Framework Layer"]
-        Web["tusk-web<br/>HTTP Server & Router"]
-        Micro["tusk-micro<br/>Health & Metrics"]
-        Data["tusk-data<br/>Repository Pattern"]
-        CLI["tusk-cli<br/>Commands & Scaffolding"]
+    subgraph PHP ["PHP Framework Workers"]
+        Runner["Runner (Persistent Loop)"] --> Kernel["Application Kernel"]
+        Kernel --> Domain["Domain Logic (Controllers/Services)"]
     end
     
-    subgraph Runtime["Runtime Layer"]
-        Supervisor["tusk-runtime<br/>Kernel & Supervisor"]
-    end
+    Pool -- "NDJSON over Pipes" --> Runner
     
-    subgraph Core["Core Layer"]
-        Container["tusk-core<br/>DI Container & Contracts"]
-    end
-    
-    Controllers --> Web
-    Controllers --> Micro
-    Controllers --> Data
-    Controllers --> CLI
-    
-    Web --> Supervisor
-    Micro --> Supervisor
-    Data --> Supervisor
-    CLI --> Supervisor
-    
-    Supervisor --> Container
-    
-    style Application fill:#e1f5ff
-    style Framework fill:#fff4e1
-    style Runtime fill:#ffe1f5
-    style Core fill:#e1ffe1
+    style Engine fill:#f9f9f9,stroke:#333,stroke-width:1px
+    style PHP fill:#fff,stroke:#333,stroke-width:1px
 ```
-
----
-
-## Philosophy
-
-### 1. Domain-First
-Your business logic comes first. The framework adapts to your domain, not the other way around.
-
-### 2. Explicit over Magic
-No hidden conventions or "magic" behavior. Every dependency is clear and traceable.
-
-### 3. Performance Matters
-Native implementations, minimal overhead, and efficient resource usage.
-
-### 4. Developer Experience
-Fast scaffolding, clear error messages, and comprehensive documentation.
 
 ---
 
 ## Ecosystem
 
-| Repository | Description | Status |
-|------------|-------------|--------|
-| [tusk-core](https://github.com/tusk-framework/tusk-core) | Dependency injection & contracts | Stable |
-| [tusk-runtime](https://github.com/tusk-framework/tusk-runtime) | Process manager & supervisor | Stable |
-| [tusk-web](https://github.com/tusk-framework/tusk-web) | HTTP server, router, request handling | Stable |
-| [tusk-data](https://github.com/tusk-framework/tusk-data) | Database abstraction & repositories | Stable |
-| [tusk-micro](https://github.com/tusk-framework/tusk-micro) | Microservice utilities | Stable |
-| [tusk-cli](https://github.com/tusk-framework/tusk-cli) | Command-line tools | Stable |
-| [tusk-docs](https://github.com/tusk-framework/tusk-docs) | Official documentation | Live |
+The Tusk platform is composed of several high-quality components:
+
+| Repository | Description | Role |
+|------------|-------------|------|
+| [**tusk-engine**](https://github.com/tusk-framework/tusk-engine) | Go Master Process | Request Handling & Process Supervision |
+| [**tusk-framework**](https://github.com/tusk-framework/tusk-framework) | PHP Monorepo | Core, Web, Data, and Security Components |
+| [**tusk-docs**](https://github.com/tusk-framework/tusk-docs) | Official Documentation | Guides, Tutorials, and API Reference |
+
+---
+
+## Philosophy
+
+- **Domain-First**: Your code describes business rules, not framework boilerplate.
+- **Explicit over Magic**: No hidden behavior. Dependencies are pre-compiled and transparent.
+- **Performance**: Sub-millisecond latency by default through persistence.
+- **Zero-Ops Experience**: Single-binary deployment and managed runtimes.
 
 ---
 
 ## Learn More
 
-- **[Documentation](https://tusk-framework.github.io/tusk-docs/)** - Complete guides and API reference
-- **[Quick Start Tutorial](https://tusk-framework.github.io/tusk-docs/getting-started/quickstart/)** - Build your first app in 5 minutes
-- **[Architecture Guide](https://tusk-framework.github.io/tusk-docs/architecture/overview/)** - Deep dive into framework design
-- **[Discussions](https://github.com/orgs/tusk-framework/discussions)** - Ask questions and share ideas
-
----
-
-## Contributing
-
-We welcome contributions! Whether it's:
-
-- Bug reports
-- Feature requests
-- Documentation improvements
-- Code contributions
-
-Check out our [Contributing Guide](https://github.com/tusk-framework/.github/blob/main/CONTRIBUTING.md) to get started.
-
----
-
-## License
-
-Tusk Framework is open-source software licensed under the [MIT License](https://github.com/tusk-framework/tusk-framework/blob/main/LICENSE).
+- **[Official Documentation](https://tusk-framework.github.io/tusk-docs/)**
+- **[Architecture Deep Dive](https://tusk-framework.github.io/tusk-docs/architecture/overview/)**
+- **[CLI Usage Guide](https://tusk-framework.github.io/tusk-docs/guides/cli-usage/)**
+- **[GitHub Organization](https://github.com/tusk-framework)**
 
 ---
 
 <div align="center">
-
-**Built with care by the Tusk community**
-
-[Website](https://tusk-framework.github.io/tusk-docs/) • [Documentation](https://tusk-framework.github.io/tusk-docs/) • [GitHub](https://github.com/tusk-framework)
-
+  <b>Tusk: The Runtime PHP Deserves.</b><br>
+  <a href="https://tusk-framework.github.io/tusk-docs/">Website</a> • 
+  <a href="https://tusk-framework.github.io/tusk-docs/">Documentation</a> • 
+  <a href="https://github.com/tusk-framework">GitHub</a>
 </div>
