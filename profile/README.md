@@ -97,6 +97,7 @@ The Tusk platform is composed of several high-quality components:
 
 - **[Official Documentation](https://tusk-framework.github.io/tusk-docs/)**
 - **[Architecture Deep Dive](https://tusk-framework.github.io/tusk-docs/architecture/overview/)**
+- **[Engine & Framework Integration](https://tusk-framework.github.io/tusk-docs/guides/engine-integration/)**
 - **[CLI Usage Guide](https://tusk-framework.github.io/tusk-docs/guides/cli-usage/)**
 - **[GitHub Organization](https://github.com/tusk-framework)**
 
