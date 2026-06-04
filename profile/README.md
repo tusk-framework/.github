@@ -80,6 +80,7 @@ The Tusk platform is composed of several high-quality components:
 |------------|-------------|------|
 | [**tusk-engine**](https://github.com/tusk-framework/tusk-engine) | Go Master Process | Request Handling & Process Supervision |
 | [**tusk-framework**](https://github.com/tusk-framework/tusk-framework) | PHP Monorepo | Core, Web, Data, and Security Components |
+| [**tuskpress**](https://github.com/tusk-framework/tuskpress) | Canonical CMS Example | Reference Architecture & Demonstration |
 | [**tusk-docs**](https://github.com/tusk-framework/tusk-docs) | Official Documentation | Guides, Tutorials, and API Reference |
 
 ---
