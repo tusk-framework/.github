@@ -1,112 +1,58 @@
 # Tusk Framework
 
-> **High-performance, persistent PHP Runtime & Framework Platform.**
+Tusk is a domain-first PHP framework and application platform for APIs and
+services that run on persistent PHP workers managed by RoadRunner.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-777BB4.svg)](https://www.php.net/)
-[![Documentation](https://img.shields.io/badge/docs-tusk--framework.github.io-green.svg)](https://tusk-framework.github.io/tusk-docs/)
+The platform separates application code from runtime operations:
 
----
-
-## What is Tusk?
-
-Tusk is a modern platform designed to redefine how PHP applications are built and deployed. It moves beyond the traditional "boot-and-die" lifecycle by combining a **high-performance Go-based master process** with a **persistent PHP framework**.
-
-By keeping your application in memory, Tusk eliminates the overhead of framework bootstrapping on every request, providing sub-millisecond latency and native support for modern architecture patterns.
-
-### Key Features
-
-- **Native Go Engine** - Replaces Nginx and PHP-FPM with a single, self-contained binary.
-- **Unified CLI** - One tool (`tusk`) for everything: starting the server, scaffolding, and proxying scripts.
-- **Persistent Runtime** - Your application stays alive across requests, maintaining state and connection pools.
-- **Zero-Dependency Installation** - Managed portable PHP runtimes via one-line installers.
-- **Domain-First Framework** - Clean architecture (DI, Repository, Events) built specifically for performance.
-
----
-
-## Quick Start (One-Liner)
-
-Install Tusk and a portable PHP runtime in seconds:
-
-### Linux / macOS
-```bash
-curl -fsSL https://tusk.sh/install.sh | bash
+```text
+Client → RoadRunner → PHP worker running the Tusk Framework application
+             ↑
+       managed by Tusk Engine
 ```
 
-### Windows (PowerShell)
-```powershell
-iwr -useb https://tusk.sh/install.ps1 | iex
-```
+- **Tusk Framework** provides application bootstrap, dependency injection,
+  routing, request handling, and validation.
+- **Tusk Engine** is the Go CLI and control plane. It validates project
+  configuration, prepares the RoadRunner runtime, supervises its lifecycle,
+  and provides diagnostics. It is not a second HTTP server or worker pool.
+- **RoadRunner** owns HTTP transport and PHP worker management, including
+  pooling and recycling.
+- **Composer** creates PHP projects and manages their dependencies and scripts.
 
-### Create & Run
-```bash
-tusk init my-app
-cd my-app
+## Quick start
+
+Install PHP 8.2 or newer, Composer 2, the Tusk Engine, and RoadRunner. See the
+[installation guide](https://tusk-framework.github.io/tusk-docs/getting-started/installation/)
+for setup details.
+
+Create and run an application:
+
+```sh
+composer create-project tusk/app catalog
+cd catalog
+tusk doctor
 tusk start
 ```
 
-**Your application is live at `http://localhost:8080`**
+The default application address is `http://127.0.0.1:8080`. The generated
+application uses `bootstrap/app.php`; the Engine prepares the RoadRunner
+configuration when starting it.
 
----
+## Tusk ecosystem
 
-## Architecture
+| Project | Purpose |
+| --- | --- |
+| [Tusk Framework](https://github.com/tusk-framework/tusk-framework) | PHP components for building Tusk applications. |
+| [Tusk Engine](https://github.com/tusk-framework/tusk-engine) | Go CLI and control plane for project configuration and runtime lifecycle. |
+| [Tusk App](https://github.com/tusk-framework/tusk-app) | Composer skeleton for new applications. |
+| [Tusk Docs](https://github.com/tusk-framework/tusk-docs) | Official guides, architecture, and API documentation. |
+| [TuskPress](https://github.com/tusk-framework/tuskpress) | Example CMS application built for the Tusk platform. |
 
-Tusk follows a **Master-Worker** model where Go handles the networking and PHP handles the logic.
+## Learn more
 
-```mermaid
-graph TD
-    subgraph Engine ["Tusk Engine (Go)"]
-        Server["HTTP Server / TCP"] --> Pool["Worker Pool / IPC"]
-    end
-    
-    subgraph PHP ["PHP Framework Workers"]
-        Runner["Runner (Persistent Loop)"] --> Kernel["Application Kernel"]
-        Kernel --> Domain["Domain Logic (Controllers/Services)"]
-    end
-    
-    Pool -- "NDJSON over Pipes" --> Runner
-    
-    style Engine fill:#f9f9f9,stroke:#333,stroke-width:1px
-    style PHP fill:#fff,stroke:#333,stroke-width:1px
-```
-
----
-
-## Ecosystem
-
-The Tusk platform is composed of several high-quality components:
-
-| Repository | Description | Role |
-|------------|-------------|------|
-| [**tusk-engine**](https://github.com/tusk-framework/tusk-engine) | Go Master Process | Request Handling & Process Supervision |
-| [**tusk-framework**](https://github.com/tusk-framework/tusk-framework) | PHP Monorepo | Core, Web, Data, and Security Components |
-| [**tuskpress**](https://github.com/tusk-framework/tuskpress) | Canonical CMS Example | Reference Architecture & Demonstration |
-| [**tusk-docs**](https://github.com/tusk-framework/tusk-docs) | Official Documentation | Guides, Tutorials, and API Reference |
-
----
-
-## Philosophy
-
-- **Domain-First**: Your code describes business rules, not framework boilerplate.
-- **Explicit over Magic**: No hidden behavior. Dependencies are pre-compiled and transparent.
-- **Performance**: Sub-millisecond latency by default through persistence.
-- **Zero-Ops Experience**: Single-binary deployment and managed runtimes.
-
----
-
-## Learn More
-
-- **[Official Documentation](https://tusk-framework.github.io/tusk-docs/)**
-- **[Architecture Deep Dive](https://tusk-framework.github.io/tusk-docs/architecture/overview/)**
-- **[Engine & Framework Integration](https://tusk-framework.github.io/tusk-docs/guides/engine-integration/)**
-- **[CLI Usage Guide](https://tusk-framework.github.io/tusk-docs/guides/cli-usage/)**
-- **[GitHub Organization](https://github.com/tusk-framework)**
-
----
-
-<div align="center">
-  <b>Tusk: The Runtime PHP Deserves.</b><br>
-  <a href="https://tusk-framework.github.io/tusk-docs/">Website</a> • 
-  <a href="https://tusk-framework.github.io/tusk-docs/">Documentation</a> • 
-  <a href="https://github.com/tusk-framework">GitHub</a>
-</div>
+- [Documentation](https://tusk-framework.github.io/tusk-docs/)
+- [Architecture overview](https://tusk-framework.github.io/tusk-docs/architecture/overview/)
+- [Engine integration](https://tusk-framework.github.io/tusk-docs/guides/engine-integration/)
+- [CLI guide](https://tusk-framework.github.io/tusk-docs/guides/cli-usage/)
+- [GitHub organization](https://github.com/tusk-framework)
